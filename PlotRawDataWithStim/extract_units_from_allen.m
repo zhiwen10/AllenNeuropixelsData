@@ -1,3 +1,5 @@
+githubDir = 'C:\Users\Steinmetz lab\Documents\git'; 
+addpath(genpath(fullfile(githubDir, 'AllenNeuropixelsData')))
 %% read unit table, and preset parameters
 
 sessionnum = '754312389';
@@ -6,10 +8,16 @@ sessionnum = '754312389';
 filename = ['session_' sessionnum '.nwb'];
 binSize = 0.01;
 ybound = 800;
-presentation_scale = 1000;
+presentation_scale = 50;
+pupil_scale = 10;
 yscale = 3;
 cmap1 = flipud(cbrewer('qual', 'Set1', 6));
 sz = 5;
+
+%% pupil size
+pupil = readtable(['session_' sessionnum '_pupil_width.csv']);
+pupil1 = table2array(pupil);
+pupil2(:,2) = pupil1(:,2)*pupil_scale;
 
 %% get presenattion table list
 presentation = readtable(['session_' sessionnum '_presentation.csv']);
@@ -62,7 +70,10 @@ lgd_name = {'VISam','VISpm','VISp','VISlm','VISal','VISrl'};
 idx = find(~cellfun(@isempty,p1));
 lgd_name2 = lgd_name(idx);
 lgd_name_all = [lgd_name2,lgd1_name1];
-lgd = legend([p2; p0],lgd_name_all);
+
+
+hold on
+plot(pupil2(:,1),pupil2(:,2),'k','LineWidth',2);
 % 
 % % lgd.NumColumns = 2;
 % ldg.NumColumnsModes = 'auto';
@@ -108,3 +119,4 @@ s1.spikes.amps = spike_amp4;
 % clear spike_time spike_amp id spiek_index peak_channel spike_cluster id2 peak_channel2 spike_cluster2 id3...
 %     index3 id4 peak_channel4 spike_time4 spike_cluster4
 end
+
